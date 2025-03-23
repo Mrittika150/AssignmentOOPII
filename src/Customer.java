@@ -63,26 +63,46 @@ public class Customer {
      */
     public void addNewCustomer() {
         System.out.printf("\n\n\n%60s ++++++++++++++ Welcome to the Customer Registration Portal ++++++++++++++", "");
+
+        Customer newCustomer = readCustomerInfo();
+
+        customerCollection.add(newCustomer);
+    }
+
+    // Extracted method to handle reading customer information
+    private Customer readCustomerInfo() {
         Scanner read = new Scanner(System.in);
+
         System.out.print("\nEnter your name :\t");
         String name = read.nextLine();
+
         System.out.print("Enter your email address :\t");
         String email = read.nextLine();
+
         while (isUniqueData(email)) {
             System.out.println(
-                    "ERROR!!! User with the same email already exists... Use new email or login using the previous credentials....");
+                    "ERROR!!! User with the same email already exists... Use new email or login using the previous credentials...."
+            );
             System.out.print("Enter your email address :\t");
             email = read.nextLine();
         }
+
         System.out.print("Enter your Password :\t");
         String password = read.nextLine();
+
         System.out.print("Enter your Phone number :\t");
         String phone = read.nextLine();
+
         System.out.print("Enter your address :\t");
         String address = read.nextLine();
+
         System.out.print("Enter your age :\t");
         int age = read.nextInt();
-        customerCollection.add(new Customer(name, email, password, phone, address, age));
+
+        // Clear buffer to avoid input issues
+        read.nextLine();
+
+        return new Customer(name, email, password, phone, address, age);
     }
 
     /**
@@ -144,21 +164,10 @@ public class Customer {
 
     public void editUserInfo(String ID) {
         boolean isFound = false;
-        Scanner read = new Scanner(System.in);
         for (Customer c : customerCollection) {
             if (ID.equals(c.getUserID())) {
                 isFound = true;
-                System.out.print("\nEnter the new name of the Passenger:\t");
-                String name = read.nextLine();
-                c.setName(name);
-                System.out.print("Enter the new email address of Passenger " + name + ":\t");
-                c.setEmail(read.nextLine());
-                System.out.print("Enter the new Phone number of Passenger " + name + ":\t");
-                c.setPhone(read.nextLine());
-                System.out.print("Enter the new address of Passenger " + name + ":\t");
-                c.setAddress(read.nextLine());
-                System.out.print("Enter the new age of Passenger " + name + ":\t");
-                c.setAge(read.nextInt());
+                readAndUpdateCustomerInfo(c);
                 displayCustomersData(false);
                 break;
             }
@@ -166,6 +175,28 @@ public class Customer {
         if (!isFound) {
             System.out.printf("%-50sNo Customer with the ID %s Found...!!!\n", " ", ID);
         }
+    }
+
+    private void readAndUpdateCustomerInfo(Customer c) {
+        Scanner read = new Scanner(System.in);
+
+        System.out.print("\nEnter the new name of the Passenger:\t");
+        c.setName(read.nextLine());
+
+        System.out.print("Enter the new email address of Passenger " + c.getName() + ":\t");
+        c.setEmail(read.nextLine());
+
+        System.out.print("Enter the new Phone number of Passenger " + c.getName() + ":\t");
+        c.setPhone(read.nextLine());
+
+        System.out.print("Enter the new address of Passenger " + c.getName() + ":\t");
+        c.setAddress(read.nextLine());
+
+        System.out.print("Enter the new age of Passenger " + c.getName() + ":\t");
+        c.setAge(read.nextInt());
+
+        // To prevent input issues when using nextInt() before nextLine()
+        read.nextLine();
     }
 
     public void deleteUser(String ID) {
