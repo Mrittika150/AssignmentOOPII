@@ -69,7 +69,7 @@ public class FlightReservation implements DisplayClass {
     void cancelFlight(String userID) {
         String flightNum = "";
         Scanner read = new Scanner(System.in);
-        int index = 0, ticketsToBeReturned;
+        int index = 0, ticketsToBeReturned = 0;
         boolean isFound = false;
         for (Customer customer : Customer.customerCollection) {
             if (userID.equals(customer.getUserID())) {
@@ -90,14 +90,12 @@ public class FlightReservation implements DisplayClass {
                                 System.out.print("ERROR!!! Number of tickets cannot be greater than " + numOfTicketsForFlight + " for this flight. Please enter the number of tickets again : ");
                                 numOfTickets = read.nextInt();
                             }
-                            if (numOfTicketsForFlight == numOfTickets) {
-                                ticketsToBeReturned = flight.getNoOfSeats() + numOfTicketsForFlight;
-                                customer.getNumOfTicketsBookedByUser().remove(index);
-                                flightIterator.remove();
-                            } else {
-                                ticketsToBeReturned = numOfTickets + flight.getNoOfSeats();
-                                customer.getNumOfTicketsBookedByUser().set(index, (numOfTicketsForFlight - numOfTickets));
+                            int returnedTickets = customer.cancelFlightAtIndex(index, numOfTickets);
+                            flight.setNoOfSeatsInTheFlight(flight.getNoOfSeats() + returnedTickets);
+                            if (returnedTickets == numOfTicketsForFlight) {
+                                flightIterator.remove(); 
                             }
+
                             flight.setNoOfSeatsInTheFlight(ticketsToBeReturned);
                             break;
                         }

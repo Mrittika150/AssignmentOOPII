@@ -224,6 +224,21 @@ public class Customer {
         int currentTickets = this.numOfTicketsBookedByUser.get(index);
         this.numOfTicketsBookedByUser.set(index, currentTickets + additionalTickets);
     }
+    public int cancelFlightAtIndex(int index, int ticketsToCancel) {
+        int currentTickets = numOfTicketsBookedByUser.get(index);
+
+        if (ticketsToCancel >= currentTickets) {
+
+            numOfTicketsBookedByUser.remove(index);
+            flightsRegisteredByUser.remove(index);
+            return currentTickets;
+        } else {
+
+            numOfTicketsBookedByUser.set(index, currentTickets - ticketsToCancel);
+            return ticketsToCancel;
+        }
+    }
+
 
     // ************************************************************ Setters &
     // Getters ************************************************************
