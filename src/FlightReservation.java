@@ -40,13 +40,13 @@ public class FlightReservation implements DisplayClass {
                             f1.addNewCustomerToFlight(customer);
                         }
                         if (isFlightAlreadyAddedToCustomerList(customer.getFlightsRegisteredByUser(), f1)) {
-                            addNumberOfTicketsToAlreadyBookedFlight(customer, numOfTickets);
+                            customer.updateTicketsForExistingFlight(flightIndexInFlightList, numOfTickets);
+
                             if (flightIndex(flight.getFlightList(), flight) != -1) {
-                                customer.addExistingFlightToCustomerList(flightIndex(flight.getFlightList(), flight), numOfTickets);
+                                customer.updateTicketsForExistingFlight(flightIndex(flight.getFlightList(), flight), numOfTickets);
                             }
                         } else {
-                            customer.addNewFlightToCustomerList(f1);
-                            addNumberOfTicketsForNewFlight(customer, numOfTickets);
+                            customer.bookNewFlight(f1, numOfTickets);
                         }
                     break;
                     }
@@ -114,16 +114,6 @@ public class FlightReservation implements DisplayClass {
             }
         }
     }
-
-    void addNumberOfTicketsToAlreadyBookedFlight(Customer customer, int numOfTickets) {
-        int newNumOfTickets = customer.getNumOfTicketsBookedByUser().get(flightIndexInFlightList) + numOfTickets;
-        customer.getNumOfTicketsBookedByUser().set(flightIndexInFlightList, newNumOfTickets);
-    }
-
-    void addNumberOfTicketsForNewFlight(Customer customer, int numOfTickets) {
-        customer.getNumOfTicketsBookedByUser().add(numOfTickets);
-    }
-
     boolean isFlightAlreadyAddedToCustomerList(List<Flight> flightList, Flight flight) {
         boolean addedOrNot = false;
         for (Flight flight1 : flightList) {

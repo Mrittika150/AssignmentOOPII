@@ -209,6 +209,22 @@ public class Customer {
         this.numOfTicketsBookedByUser.set(index, newNumOfTickets);
     }
 
+    public void bookNewFlight(Flight flight, int numOfTickets) {
+        if (flightsRegisteredByUser == null) {
+            flightsRegisteredByUser = new ArrayList<>();
+        }
+        if (numOfTicketsBookedByUser == null) {
+            numOfTicketsBookedByUser = new ArrayList<>();
+        }
+        this.flightsRegisteredByUser.add(flight);
+        this.numOfTicketsBookedByUser.add(numOfTickets);
+    }
+
+    public void updateTicketsForExistingFlight(int index, int additionalTickets) {
+        int currentTickets = this.numOfTicketsBookedByUser.get(index);
+        this.numOfTicketsBookedByUser.set(index, currentTickets + additionalTickets);
+    }
+
     // ************************************************************ Setters &
     // Getters ************************************************************
 
