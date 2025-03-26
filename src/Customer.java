@@ -193,11 +193,7 @@ public class Customer {
      *
      * @param f flight to associate
      */
-    void addNewFlightToCustomerList(Flight f) {
-        this.flightsRegisteredByUser.add(f);
-        // numOfFlights++;
-    }
-
+   
     /**
      * Adds numOfTickets to already booked flights
      *
