@@ -29,32 +29,22 @@ public class FlightReservation implements DisplayClass {
      * @param userID       userID of the user which is booking the flight
      */
     void bookFlight(String flightNo, int numOfTickets, String userID) {
-        boolean isFound = false;
-        for (Flight f1 : flight.getFlightList()) {
-            if (flightNo.equalsIgnoreCase(f1.getFlightNumber())) {
-                for (Customer customer : Customer.customerCollection) {
-                    if (userID.equals(customer.getUserID())) {
-                        isFound = true;
-                        f1.setNoOfSeatsInTheFlight(f1.getNoOfSeats() - numOfTickets);
-                        if (!f1.isCustomerAlreadyAdded(f1.getListOfRegisteredCustomersInAFlight(), customer)) {
-                            f1.addNewCustomerToFlight(customer);
-                        }
-                        if (isFlightAlreadyAddedToCustomerList(customer.getFlightsRegisteredByUser(), f1)) {
-                            customer.updateTicketsForExistingFlight(flightIndexInFlightList, numOfTickets);
+        FlightBookingService bookingService = new FlightBookingService();
+        boolean booked = false;
 
-                            if (flightIndex(flight.getFlightList(), flight) != -1) {
-                                customer.updateTicketsForExistingFlight(flightIndex(flight.getFlightList(), flight), numOfTickets);
-                            }
-                        } else {
-                            customer.bookNewFlight(f1, numOfTickets);
-                        }
-                    break;
+        for (Flight f : flight.getFlightList()) {
+            if (f.getFlightNumber().equalsIgnoreCase(flightNo)) {
+                for (Customer customer : Customer.customerCollection) {
+                    if (customer.getUserID().equals(userID)) {
+                        booked = bookingService.bookFlight(f, customer, numOfTickets);
+                        break;
                     }
                 }
             }
         }
-        if (!isFound) {
-            System.out.println("Invalid Flight Number...! No flight with the  ID \"" + flightNo + "\" was found...");
+
+        if (!booked) {
+            System.out.println("Invalid Flight Number or Booking Failed.");
         } else {
             System.out.printf("\n %50s You've booked %d tickets for Flight \"%5s\"...", "", numOfTickets, flightNo.toUpperCase());
         }
@@ -67,51 +57,61 @@ public class FlightReservation implements DisplayClass {
      * @param userID    ID of the user for whom the flight is to be cancelled
      */
     void cancelFlight(String userID) {
-        String flightNum = "";
         Scanner read = new Scanner(System.in);
-        int index = 0, ticketsToBeReturned = 0;
         boolean isFound = false;
+
         for (Customer customer : Customer.customerCollection) {
             if (userID.equals(customer.getUserID())) {
-                if (customer.getFlightsRegisteredByUser().size() != 0) {
-                    System.out.printf("%50s %s Here is the list of all the Flights registered by you %s", " ", "++++++++++++++", "++++++++++++++");
-                    displayFlightsRegisteredByOneUser(userID);
-                    System.out.print("Enter the Flight Number of the Flight you want to cancel : ");
-                    flightNum = read.nextLine();
-                    System.out.print("Enter the number of tickets to cancel : ");
-                    int numOfTickets = read.nextInt();
-                    Iterator<Flight> flightIterator = customer.getFlightsRegisteredByUser().iterator();
-                    while (flightIterator.hasNext()) {
-                        Flight flight = flightIterator.next();
-                        if (flightNum.equalsIgnoreCase(flight.getFlightNumber())) {
-                            isFound = true;
-                            int numOfTicketsForFlight = customer.getNumOfTicketsBookedByUser().get(index);
-                            while (numOfTickets > numOfTicketsForFlight) {
-                                System.out.print("ERROR!!! Number of tickets cannot be greater than " + numOfTicketsForFlight + " for this flight. Please enter the number of tickets again : ");
-                                numOfTickets = read.nextInt();
-                            }
-                            int returnedTickets = customer.cancelFlightAtIndex(index, numOfTickets);
-                            flight.setNoOfSeatsInTheFlight(flight.getNoOfSeats() + returnedTickets);
-                            if (returnedTickets == numOfTicketsForFlight) {
-                                flightIterator.remove(); 
-                            }
+                List<Flight> flights = customer.getFlightsRegisteredByUser();
 
-                            flight.setNoOfSeatsInTheFlight(ticketsToBeReturned);
-                            break;
+                if (flights.isEmpty()) {
+                    System.out.printf("No flights found for user with ID \"%s\".\n", userID);
+                    return;
+                }
+
+               
+                System.out.printf("%50s %s Here is the list of all the Flights registered by you %s\n", " ", "++++++++++++++", "++++++++++++++");
+                displayFlightsRegisteredByOneUser(userID);
+
+                System.out.print("Enter the Flight Number to cancel: ");
+                String flightNum = read.nextLine();
+
+                System.out.print("Enter the number of tickets to cancel: ");
+                int ticketsToCancel = read.nextInt();
+                for (Flight flight : flights) {
+                    if (flight.getFlightNumber().equalsIgnoreCase(flightNum)) {
+                        int index = flights.indexOf(flight);
+                        int maxTickets = customer.getNumOfTicketsBookedByUser().get(index);
+
+
+                        while (ticketsToCancel > maxTickets) {
+                            System.out.printf("ERROR: You can't cancel more than %d ticket(s). Enter again: ", maxTickets);
+                            ticketsToCancel = read.nextInt();
                         }
-                        index++;
-                    }
 
-                }else{
-                    System.out.println("No Flight Has been Registered by you with ID \"\"" + flightNum.toUpperCase() +"\"\".....");
+
+                        FlightBookingService bookingService = new FlightBookingService();
+                        boolean cancelled = bookingService.cancelFlight(flight, customer, ticketsToCancel);
+
+                        if (cancelled) {
+                            System.out.printf("\nSuccessfully cancelled %d ticket(s) for flight \"%s\".\n", ticketsToCancel, flightNum.toUpperCase());
+                        } else {
+                            System.out.println("Cancellation failed. Please try again.");
+                        }
+
+                        isFound = true;
+                        break;
+                    }
                 }
-//                index++;
+
                 if (!isFound) {
-                    System.out.println("ERROR!!! Couldn't find Flight with ID \"" + flightNum.toUpperCase() + "\".....");
+                    System.out.printf("ERROR: No flight with ID \"%s\" found in your bookings.\n", flightNum.toUpperCase());
                 }
+                break;
             }
         }
     }
+
     boolean isFlightAlreadyAddedToCustomerList(List<Flight> flightList, Flight flight) {
         boolean addedOrNot = false;
         for (Flight flight1 : flightList) {
