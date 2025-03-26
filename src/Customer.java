@@ -107,7 +107,8 @@ public class Customer {
             customer.setPhone(details.get(2));
             customer.setAddress(details.get(3));
             customer.setAge(Integer.parseInt(details.get(4)));
-            displayCustomersData(false);
+            CustomerDisplayService displayService = new CustomerDisplayService();
+            displayService.displayCustomers(customerCollection);
         } else {
             System.out.printf("%-50sNo Customer with the ID %s Found...!!!\n", " ", ID);
         }
@@ -119,7 +120,9 @@ public class Customer {
         if (customer != null) {
             customerCollection.remove(customer);
             System.out.printf("\n%-50sPrinting all Customer's Data after deleting Customer with the ID %s.....!!!!\n", "", ID);
-            displayCustomersData(false);
+            CustomerDisplayService displayService = new CustomerDisplayService();
+            displayService.displayCustomers(customerCollection);
+
         } else {
             System.out.printf("%-50sNo Customer with the ID %s Found...!!!\n", " ", ID);
         }
