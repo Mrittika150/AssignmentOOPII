@@ -112,17 +112,7 @@ public class FlightReservation implements DisplayClass {
         }
     }
 
-    boolean isFlightAlreadyAddedToCustomerList(List<Flight> flightList, Flight flight) {
-        boolean addedOrNot = false;
-        for (Flight flight1 : flightList) {
-            if (flight1.getFlightNumber().equalsIgnoreCase(flight.getFlightNumber())) {
-                this.flightIndexInFlightList = flightList.indexOf(flight1);
-                addedOrNot = true;
-                break;
-            }
-        }
-        return addedOrNot;
-    }
+
 
     String flightStatus(Flight flight) {
         boolean isFlightAvailable = false;
@@ -139,7 +129,7 @@ public class FlightReservation implements DisplayClass {
         }
     }
 
-    /*toString() Method for displaying number of flights registered by single user...*/
+
     public String toString(int serialNum, Flight flights, Customer customer) {
         return String.format("| %-5d| %-41s | %-9s | \t%-9d | %-21s | %-22s | %-10s  |   %-6sHrs |  %-4s  | %-10s |", serialNum, flights.getFlightSchedule(), flights.getFlightNumber(), customer.getNumOfTicketsBookedByUser().get(serialNum - 1), flights.getFromWhichCity(), flights.getToWhichCity(), flights.fetchArrivalTime(), flights.getFlightTime(), flights.getGate(), flightStatus(flights));
     }
