@@ -69,7 +69,7 @@ public class FlightReservation implements DisplayClass {
                     return;
                 }
 
-               
+
                 System.out.printf("%50s %s Here is the list of all the Flights registered by you %s\n", " ", "++++++++++++++", "++++++++++++++");
                 displayFlightsRegisteredByOneUser(userID);
 

@@ -105,7 +105,10 @@ public class User {
                         desiredOption = read.nextInt();
                         /* If 1 is entered by the privileged user, then add a new customer...... */
                         if (desiredOption == 1) {
-                            Customer customer = readCustomerData();
+                            UserInputReader input = new UserInputReader();
+                            CustomerFactory factory = new CustomerFactory();
+                            Customer customer = input.readCustomer(factory);
+
 
                             c1.addNewCustomer(customer);
                         } else if (desiredOption == 2) {
@@ -132,7 +135,10 @@ public class User {
                             System.out.print("Enter the CustomerID to Update its Data :\t");
                             String customerID = read1.nextLine();
                             if (customersCollection.size() > 0) {
-                                List<String> details = readCustomerInfo();
+                                UserInputReader input = new UserInputReader();
+                                List<String> details;
+                                details = input.readCustomerInfoUpdate();
+
                                 c1.editUserInfo(customerID,details);
                             } else {
                                 System.out.printf("%-50sNo Customer with the ID %s Found...!!!\n", " ", customerID);
