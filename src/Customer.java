@@ -131,10 +131,10 @@ public class Customer {
     /**
      * Shows the customers' data in formatted way.
      *
-     * @param showHeader to check if we want to print ascii art for the customers'
+     * @ to check if we want to print ascii art for the customers'
      *                   data.
      */
-    public void displayCustomersData(boolean showHeader) {
+    public void displayCustomersData() {
         displayHeader();
         Iterator<Customer> iterator = customerCollection.iterator();
         int i = 0;
@@ -193,7 +193,7 @@ public class Customer {
      *
      * @param f flight to associate
      */
-   
+
     /**
      * Adds numOfTickets to already booked flights
      *

@@ -1,6 +1,6 @@
 import java.util.List;
 
-// FlightBookingService.java
+
 public class FlightBookingService {
 
     public boolean bookFlight(Flight flight, Customer customer, int numOfTickets) {

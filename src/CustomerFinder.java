@@ -1,4 +1,4 @@
-// New file: CustomerFinder.java
+
 import java.util.List;
 
 public class CustomerFinder {
