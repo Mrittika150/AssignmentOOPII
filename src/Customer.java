@@ -14,7 +14,7 @@ public class Customer {
     private List<Flight> flightsRegisteredByUser;
     private List<Integer> numOfTicketsBookedByUser;
     public static final List<Customer> customerCollection = User.getCustomersCollection();
-
+    private static final CustomerFinder customerFinder = new CustomerFinder();
     // ************************************************************
     // Behaviours/Methods
     // ************************************************************
@@ -40,11 +40,9 @@ public class Customer {
      * @param address  customer's address
      * @param age      customer's age
      */
-    Customer(String name, String email, String password, String phone, String address, int age) {
-        RandomGenerator random = new RandomGenerator();
-        random.randomIDGen();
+    public Customer(String userID, String name, String email, String password, String phone, String address, int age) {
+        this.userID = userID;
         this.name = name;
-        this.userID = random.getRandomNumber();
         this.email = email;
         this.password = password;
         this.phone = phone;
@@ -53,6 +51,7 @@ public class Customer {
         this.flightsRegisteredByUser = new ArrayList<>();
         this.numOfTicketsBookedByUser = new ArrayList<>();
     }
+
 
     /**
      * Takes input for the new customer and adds them to programs memory.
@@ -85,7 +84,7 @@ public class Customer {
      * @param ID of the searching/required customer
      */
     public void searchUser(String ID) {
-        Customer customer = findCustomerByID(ID); // Use the extracted method
+        Customer customer = customerFinder.findById(ID, customerCollection);
 
         if (customer != null) {
             System.out.printf("%-50sCustomer Found...!!! Here is the Full Record...!!!\n\n\n", " ");
@@ -99,8 +98,8 @@ public class Customer {
         }
     }
 
-    public void editUserInfo(String ID,List<String> details) {
-        Customer customer = findCustomerByID(ID);
+    public void editUserInfo(String ID, List<String> details) {
+        Customer customer = customerFinder.findById(ID, customerCollection);
 
         if (customer != null) {
             customer.setName(details.get(0));
@@ -113,22 +112,13 @@ public class Customer {
             System.out.printf("%-50sNo Customer with the ID %s Found...!!!\n", " ", ID);
         }
     }
-    private Customer findCustomerByID(String ID) {
-        for (Customer c : customerCollection) {
-            if (ID.equals(c.getUserID())) {
-                return c;  // Return customer if found
-            }
-        }
-        return null;  // Return null if not found
-    }
 
     public void deleteUser(String ID) {
-        Customer customer = findCustomerByID(ID); // Use extracted method
+        Customer customer = customerFinder.findById(ID, customerCollection);
 
         if (customer != null) {
-            customerCollection.remove(customer); // Remove customer directly
-            System.out.printf("\n%-50sPrinting all Customer's Data after deleting Customer with the ID %s.....!!!!\n",
-                    "", ID);
+            customerCollection.remove(customer);
+            System.out.printf("\n%-50sPrinting all Customer's Data after deleting Customer with the ID %s.....!!!!\n", "", ID);
             displayCustomersData(false);
         } else {
             System.out.printf("%-50sNo Customer with the ID %s Found...!!!\n", " ", ID);
